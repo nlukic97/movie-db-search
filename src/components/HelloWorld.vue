@@ -4,7 +4,7 @@
     <ul v-if="list">
 
       <li v-for="(item, index) in list" v-bind:key="index">
-        <a v-bind:href="item.imbdID" target="_target" title="Open in imbd">
+        <a v-bind:href="item.imbdID" target="_blank" title="Open in imbd">
           <img v-bind:src="item.Poster" alt="">
           <h2>{{item.Title}} ({{item.Year}})</h2>
           <p>{{item.Type}}</p>
@@ -36,15 +36,11 @@ export default {
           if(response.data.Response == 'True'){
             this.list = response.data.Search;
             this.error = null;
-            console.log(this.list)
+            // console.log(this.list)
+            this.generateImbdUrl()
+
+            //if the for loop from the generateImbdUrl was here, one method would not work. Take a look at question.vue 
             
-            for(var i = 0; i < this.list.length; i++){  // Zasto ovde ispod vucem ovako ?
-              this.list[i].imbdID =' https://www.imdb.com/title/' + this.list[i]['imdbID'] + '/'
-              // this.list[i].imbdID =' https://www.imdb.com/title/' + this.list[i].imdbID + '/' // zasto ne bi ovo radilo ?
-              
-              // console.log(this.list[i].imbdID)
-              // console.log(this.list[i]['imbdID'])
-            }
           } else {
             if(response.data.Error == 'Something went wrong.'){
               this.error = 'Search for something...';
@@ -56,10 +52,12 @@ export default {
         })
         .catch(this.error = 'Something went wrong. Please try again')
     },
-    openInImdb: function(id){
-      console.log(id);
-      // console.log(this.list)
-      window.open('https://www.imdb.com/title/'+ id + '/');
+    generateImbdUrl(){ //description:   take the id, and in our list add imbd url and append id
+      for(var i = 0; i < this.list.length; i++){ 
+        this.list[i].imbdID =' https://www.imdb.com/title/' + this.list[i].imdbID + '/' 
+        // console.log(this.list[i].imbdID)
+        // console.log(this.list[i]['imbdID'])
+      }
     }
   }
 }
