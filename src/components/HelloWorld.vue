@@ -1,9 +1,10 @@
 <template>
   <div class="hello">
-    <input v-model="searchTerm" type="text" v-on:keyup="updateList">
+    <label for="search">Search titles:</label>
+    <input v-model="searchTerm" type="text" id="search" v-on:keyup="updateList">
     <div>
-    <label for="type">Type:</label>
-      <select v-model="filterType" v-on:change="updateList" name="type" id="type" > <!-- ubacivanje v- opcija cini da se ne prikazuje movie kao default opcija, nego stoji prazan dropdown (cak i kad promenim v-model'd filterType text) -->
+      <label for="type">Type:</label>
+      <select v-model="filterType" v-on:change="validationForSearch" name="type" id="type" > <!-- ubacivanje v- opcija cini da se ne prikazuje movie kao default opcija, nego stoji prazan dropdown (cak i kad promenim v-model'd filterType text) -->
         <option value="movie" >movie</option>
         <option value="series" selected>series</option>
         <option value="episode">episode</option>
@@ -66,6 +67,11 @@ export default {
         // console.log(this.list[i].imbdID)
         // console.log(this.list[i]['imbdID'])
       }
+    },
+    validationForSearch(){
+      if(this.searchTerm.length >= 3){
+        this.updateList()
+      } 
     }
   }
 }
