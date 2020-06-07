@@ -1,8 +1,15 @@
 <template>
   <div class="hello">
     <input v-model="searchTerm" type="text" v-on:keyup="updateList">
+    <div>
+    <label for="type">Type:</label>
+      <select v-model="filterType" v-on:change="updateList" name="type" id="type" > <!-- ubacivanje v- opcija cini da se ne prikazuje movie kao default opcija, nego stoji prazan dropdown (cak i kad promenim v-model'd filterType text) -->
+        <option value="movie" >movie</option>
+        <option value="series" selected>series</option>
+        <option value="episode">episode</option>
+      </select>
+    </div>
     <ul v-if="list">
-
       <li v-for="(item, index) in list" v-bind:key="index">
         <a v-bind:href="item.imbdID" target="_blank" title="Open in imbd">
           <img v-bind:src="item.Poster" alt="">
@@ -10,7 +17,6 @@
           <p>{{item.Type}}</p>
         </a>
       </li>
-
     </ul>
     <p v-if="error">{{this.error}}</p>
   </div>
@@ -24,14 +30,16 @@ export default {
     return {
       apiKey:'34dace2e',
       searchTerm:'',
+      filterType:'', //promena ovoga ce idalje napraviti da bude prazan checkbox zbog vue opcija u select tagu
       list: null,
-      error:'Search for something...'
+      error:'Search for something...' //error ako samo promenimo opciju filma --> pojavi se na brzaka 'error message' i onda pise ovo. Dodatna validacija za pormenu filma
     } 
   },
   methods: {
     updateList: function(){
+      console.log(this.filterType)
       axios
-        .get('http://www.omdbapi.com/?s=' + this.searchTerm + '&apikey=34dace2e')
+        .get('http://www.omdbapi.com/?s=' + this.searchTerm + '&type=' + this.filterType + '&apikey=34dace2e')
         .then(response => { //kad imas arrow funkciju, ne treba zagrada.
           if(response.data.Response == 'True'){
             this.list = response.data.Search;
