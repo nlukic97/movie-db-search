@@ -1,13 +1,15 @@
 <template>
   <div class="hello">
-    <label for="search">Search titles:</label>
-    <input v-model="searchTerm" type="text" id="search" v-on:keyup="updateList">
-    <div>
+    <div class="searchFilt">
+      <label for="search">Search titles:</label>
+      <input v-model="searchTerm" type="text" id="search" v-on:keyup="updateList">
+
       <label for="type">Type:</label>
       <select v-model="filterType" v-on:change="validationForSearch" name="type" id="type" > <!-- ubacivanje v- opcija cini da se ne prikazuje movie kao default opcija, nego stoji prazan dropdown (cak i kad promenim v-model'd filterType text) -->
-        <option value="movie" >movie</option>
-        <option value="series" selected>series</option>
-        <option value="episode">episode</option>
+        <option value="" >All</option>
+        <option value="movie" >Movie</option>
+        <option value="series" selected>Series</option>
+        <option value="episode">Episode</option>
       </select>
     </div>
     <ul v-if="list">
@@ -45,8 +47,9 @@ export default {
           if(response.data.Response == 'True'){
             this.list = response.data.Search;
             this.error = null;
-            // console.log(this.list)
+            console.log(this.list)
             this.generateImbdUrl()
+            this.validatePoster()
 
             //if the for loop from the generateImbdUrl was here, one method would not work. Take a look at question.vue 
             
@@ -72,6 +75,13 @@ export default {
       if(this.searchTerm.length >= 3){
         this.updateList()
       } 
+    },
+    validatePoster(){
+      for(var i = 0; i < this.list.length; i++){
+        if(this.list[i].Poster == 'N/A'){
+          this.list[i].Poster = 'https://newprojects.99acres.com/projects/unknown/united_infra/images/zj7xmckr.jpg';
+        }
+      }
     }
   }
 }
@@ -80,34 +90,84 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .hello {
-  // input {
-
-  // }
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  .searchFilt {
+    background-color:#751B51;
+    padding:20px 0;
+    label {
+      margin-left: 20px;
+      margin-right: 8px;
+      color:#fff;
+      &:hover {
+        cursor:pointer;
+      }
+    }
+    input {
+      padding:5px;
+    }
+    select{
+      padding:5px;
+      &:hover {
+        cursor:pointer;
+      }
+    }
+  }
   ul{
     list-style-type: none;
+    margin:0px 80px;
+    padding:0 10px;
     li{
       margin-bottom:35px;
+      padding:30px 100px 50px 100px;
+      &:nth-child(odd){
+        background-color:rgb(5, 163, 34);
+        a {
+        color:#fff;
+          h2 {
+            background-color:rgb(11, 53, 19);
+            padding:5px;
+          }
+          p {
+            background-color:rgb(11, 53, 19);
+            padding:5px;
+          }
+        }
+      }
+      &:nth-child(even){
+        background-color:#C2405C;
+        a {
+        color:#fff;
+          h2 {
+            background-color:#C21938;
+            padding:5px;
+          }
+          p {
+            background-color:#C21938;
+            padding:5px;
+          }
+        }
+      }
       a {
         text-decoration: none;
-        color:#333;
         img{
+          max-width: 300px;
         &:hover {
-        cursor:pointer;
+          cursor:pointer;
+          }
         }
-      }
-      h2 {
-        // margin:4px;
-        margin:15px 0 5px 0;
-        &:hover {
-        cursor:pointer;
+        h2 {
+          // margin:4px;
+          margin:15px 0 5px 0;
+          &:hover {
+          cursor:pointer;
+          }
         }
-      }
-      p{
-        margin:0;
-        &:hover {
-        cursor:pointer;
+        p{
+          margin:0;
+          &:hover {
+          cursor:pointer;
+          }
         }
-      }
       }
     }
   }
